@@ -1,4 +1,4 @@
-package com.bank_example.users_service;
+package com.bank_example.user_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

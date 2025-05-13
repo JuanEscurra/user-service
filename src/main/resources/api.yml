@@ -1,0 +1,98 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Banking User API
+servers:
+  - url: http://localhost:8585
+paths:
+  /users:
+    post:
+      summary: Crea una cuenta de ahorro
+      operationId: createSavingAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserRequest"
+      responses:
+        '201':
+          description: Cuenta de ahorro creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+  /users/{id}:
+    get:
+      summary: Obtener los datos del usuario dado su ID
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del usuario
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        '404':
+          description: Usuario no encontrado
+components:
+  schemas:
+    CreateUserRequest:
+      type: object
+      required:
+        - name
+        - lastname
+        - city
+        - phone
+        - email
+        - identifierType
+        - identifier
+        - userType
+      properties:
+        name:
+          type: string
+          minLength: 6
+        lastname:
+          type: string
+          minLength: 6
+        city:
+          type: string
+          minLength: 3
+        phone:
+          type: string
+          pattern: '^\d{9}$'
+          example: 987456321, 987412365
+        email:
+          type: string
+          format: email
+        identifierType:
+          type: string
+          enum: [DNI, CARNET_EXTRANJERIA, RUC]
+          description: Tipo de identificación puede ser 'DNI', 'CARNET_EXTRANJERIA', 'RUC'
+        identifier:
+          type: string
+          description: Valor de la identificación
+        userType:
+          type: string
+          enum: [ PERSONAL, ENTERPRISE ]
+    UserResponse:
+      type: object
+      required:
+        - id
+        - userType
+        - active
+      properties:
+        id:
+          type: string
+        userType:
+          type: string
+          enum: [ PERSONAL, ENTERPRISE ]
+        active:
+          type: boolean
