@@ -1,15 +1,15 @@
-package com.bank_example.user_service.infraestructure.out.persistence;
+package com.bank_example.user_service.infraestructure.out.persistence.models;
 
 
+import com.bank_example.user_service.domain.models.IdentifierType;
+import com.bank_example.user_service.domain.models.UserType;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
 @Data
-public class User {
+public class UserDoc {
 
     @Id
     private String id;
