@@ -5,6 +5,4 @@ spring:
     name: user-service
   data:
     mongodb:
-      uri: mongodb://localhost:27017/bd_users
-      username: admin
-      password: 123456789
+      uri: mongodb://admin:123456789@localhost:27017/bd_users?authSource=admin

@@ -1,4 +1,4 @@
-package com.bank_example.user_service.domain.models;
+package com.bank_example.user_service.domain.models.value_objects;
 
 import lombok.Getter;
 
@@ -6,8 +6,7 @@ import lombok.Getter;
 public enum IdentifierType {
 
     DNI("DNI"),
-    PASSPORT("PASSPORT"),
-    RUC("RUC");
+    PASSPORT("PASSPORT");
 
     private final String value;
 

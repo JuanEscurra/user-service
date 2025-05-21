@@ -5,94 +5,210 @@ info:
 servers:
   - url: http://localhost:8585
 paths:
-  /users:
+  /clients/personal:
     post:
-      summary: Crea una cuenta de ahorro
-      operationId: createSavingAccount
+      summary: Registrar un nuevo cliente personal
+      operationId: createPerson
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateUserRequest"
+              $ref: "#/components/schemas/CreatePersonRequest"
       responses:
         '201':
-          description: Cuenta de ahorro creada
+          description: Cliente persona registrada satisfactoriamente
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserResponse"
-  /users/{id}:
+                $ref: "#/components/schemas/ClientResponse"
+  /clients/companies:
+    post:
+      summary: Registrar un nuevo cliente empresa
+      operationId: createCompany
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCompanyRequest"
+      responses:
+        '201':
+          description: Cliente empresa registrada satisfactoriamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientResponse"
+  /clients/{id}:
     get:
-      summary: Obtener los datos del usuario dado su ID
-      operationId: getUserById
+      summary: Obtener los datos del cliente
+      operationId: getClientById
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: string
-          description: ID del usuario
+          description: ID del cliente
       responses:
         '200':
-          description: Usuario encontrado
+          description: Cliente encontrado
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserResponse"
+                $ref: "#/components/schemas/ClientResponse"
         '404':
-          description: Usuario no encontrado
+          description: Cliente no encontrado
 components:
   schemas:
-    CreateUserRequest:
+    AuditTrail:
       type: object
+      description: Auditing metadata for entities
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-05-18T14:00:00Z"
+        createdBy:
+          type: string
+          example: "admin"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-05-18T15:00:00Z"
+        updatedBy:
+          type: string
+          example: "admin"
+    BasicInformation:
+      type: object
+      description: Common attributes for a person or company
       required:
         - name
-        - lastname
-        - city
-        - phone
         - email
-        - identifierType
+        - phone
         - identifier
-        - userType
       properties:
         name:
           type: string
-          minLength: 6
-        lastname:
-          type: string
-          minLength: 6
-        city:
-          type: string
-          minLength: 3
-        phone:
-          type: string
-          pattern: '^\d{9}$'
-          example: 987456321, 987412365
+          example: "Juan Escurra"
         email:
           type: string
           format: email
-        identifierType:
+          example: "juan@example.com"
+        phone:
           type: string
-          enum: [DNI, CARNET_EXTRANJERIA, RUC]
-          description: Tipo de identificación puede ser 'DNI', 'CARNET_EXTRANJERIA', 'RUC'
+          example: "987456321"
         identifier:
           type: string
-          description: Valor de la identificación
-        userType:
-          type: string
-          enum: [ PERSONAL, ENTERPRISE ]
-    UserResponse:
-      type: object
-      required:
-        - id
-        - userType
-        - active
-      properties:
-        id:
-          type: string
-        userType:
-          type: string
-          enum: [ PERSONAL, ENTERPRISE ]
-        active:
-          type: boolean
+          example: "12345678"
+    CreateCompanyRequest:
+      allOf:
+        - $ref: '#/components/schemas/BasicInformation'
+        - type: object
+          description: Legal entity (company)
+          required:
+            - commercialName
+            - fiscalAddress
+            - representatives
+          properties:
+            name:
+                type: string
+                example: "Tech Solutions S.A.C."
+            fiscalAddress:
+              type: string
+              example: "123 Main St, Lima"
+            commercialName:
+              type: string
+              example: "Tech Solutions S.A.C."
+            representatives:
+                type: array
+                items:
+                    $ref: '#/components/schemas/CreatePersonRequest'
+
+    CreatePersonRequest:
+      allOf:
+        - $ref: '#/components/schemas/BasicInformation'
+        - type: object
+          description: Natural person
+          required:
+            - lastname
+            - identifierType
+          properties:
+            lastname:
+              type: string
+              example: "Escurra"
+            identifierType:
+              $ref: '#/components/schemas/IdentifierType'
+    ClientResponse:
+      allOf:
+        - $ref: '#/components/schemas/AuditTrail'
+        - type: object
+          description: Cliente empresarial o personal
+          oneOf:
+            - required: [person]
+            - required: [company]
+          properties:
+            id:
+              type: string
+              example: "123456"
+            clientType:
+              $ref: '#/components/schemas/ClientType'
+            clientCategory:
+              $ref: '#/components/schemas/ClientCategory'
+            active:
+              type: boolean
+              example: true
+            person:
+              $ref: '#/components/schemas/PersonResponse'
+            company:
+              $ref: '#/components/schemas/CompanyResponse'
+    PersonResponse:
+      allOf:
+        - $ref: '#/components/schemas/AuditTrail'
+        - $ref: '#/components/schemas/CreatePersonRequest'
+        - type: object
+          description: Persona o individuo registrado
+          properties:
+            id:
+              type: string
+    CompanyResponse:
+      allOf:
+        - $ref: '#/components/schemas/AuditTrail'
+        - $ref: '#/components/schemas/BasicInformation'
+        - type: object
+          description: Empresa registrada
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+              example: "Tech Solutions S.A.C."
+            fiscalAddress:
+              type: string
+              example: "123 Main St, Lima"
+            commercialName:
+              type: string
+              example: "Tech Solutions S.A.C."
+    ClientType:
+      type: string
+      description: Type of the client
+      enum:
+        - PERSONAL
+        - COMPANY
+      example: PERSONAL
+
+    ClientCategory:
+      type: string
+      description: Business classification of the client
+      enum:
+        - REGULAR
+        - PREMIUM
+        - ENTERPRISE
+      example: PREMIUM
+    IdentifierType:
+      type: string
+      description: Type of identifier
+      enum:
+        - DNI
+        - PASSPORT
+      example: "DNI"
