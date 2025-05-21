@@ -6,6 +6,7 @@ import com.bank_example.user_service.domain.models.entities.Representative;
 import com.bank_example.user_service.domain.models.entities.Person;
 import com.bank_example.user_service.domain.models.value_objects.IdentifierType;
 import com.bank_example.user_service.infraestructure.in.http.model.*;
+import com.bank_example.user_service.shared.masker.DataMasker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,8 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class ClientApiMapper {
+
+    private final DataMasker dataMasker;
 
     public ClientResponse toClientResponse(Client client, ZoneId zoneId) {
         ClientResponse clientResponse = new ClientResponse();
@@ -77,11 +80,11 @@ public class ClientApiMapper {
     public PersonResponse toPersonResponse(Person person, ZoneId zoneId) {
         PersonResponse personResponse = new PersonResponse();
         personResponse.setId(person.getId());
-        personResponse.setEmail(person.getEmail());
+        personResponse.setEmail( dataMasker.maskEmail(person.getEmail()) );
         personResponse.setName(person.getName());
         personResponse.setLastname(person.getLastname());
-        personResponse.setPhone(person.getPhone());
-        personResponse.setIdentifier(person.getIdentifier());
+        personResponse.setPhone( dataMasker.maskPhoneNumber(person.getPhone()) );
+        personResponse.setIdentifier( dataMasker.maskId(person.getIdentifier(), 5));
 
         if(person.getIdentifierType() != null) {
             personResponse.setIdentifierType(
@@ -101,9 +104,9 @@ public class ClientApiMapper {
         companyResponse.setId(company.getId());
         companyResponse.setCommercialName(company.getCommercialName());
         companyResponse.setName(company.getName());
-        companyResponse.setEmail(company.getEmail());
-        companyResponse.setPhone(company.getPhone());
-        companyResponse.setIdentifier(company.getIdentifier());
+        companyResponse.setEmail( dataMasker.maskEmail(company.getEmail()) );
+        companyResponse.setPhone( dataMasker.maskPhoneNumber(company.getPhone()) );
+        companyResponse.setIdentifier( dataMasker.maskId(company.getIdentifier(), 5) );
         companyResponse.setFiscalAddress(company.getFiscalAddress());
 
         companyResponse.setCreatedAt(company.getCreatedAt().atZone(zoneId).toOffsetDateTime());
