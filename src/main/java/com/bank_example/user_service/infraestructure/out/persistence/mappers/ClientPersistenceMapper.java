@@ -49,7 +49,8 @@ public class ClientPersistenceMapper {
 
         if (clientDoc.getPerson() != null) {
             client.setPerson(this.toPerson(clientDoc.getPerson()));
-        } else {
+        }
+        if (clientDoc.getCompany() != null) {
             client.setCompany(this.toCompany(clientDoc.getCompany()));
         }
 

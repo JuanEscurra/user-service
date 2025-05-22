@@ -36,7 +36,8 @@ public class ClientApiMapper {
 
         if (client.getPerson() != null) {
             clientResponse.setPerson( this.toPersonResponse(client.getPerson(), zoneId) );
-        } else {
+        }
+        if (client.getCompany() != null) {
             clientResponse.setCompany( this.toCompanyResponse(client.getCompany(), zoneId) );
         }
 
