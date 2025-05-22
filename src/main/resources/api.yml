@@ -4,11 +4,16 @@ info:
   title: Banking User API
 servers:
   - url: http://localhost:8585
+tags:
+  - name: Crear cliente
+  - name: Consultar cliente
 paths:
   /clients/personal:
     post:
       summary: Registrar un nuevo cliente personal
       operationId: createPerson
+      tags:
+        - Crear cliente
       requestBody:
         required: true
         content:
@@ -26,6 +31,8 @@ paths:
     post:
       summary: Registrar un nuevo cliente empresa
       operationId: createCompany
+      tags:
+        - Crear cliente
       requestBody:
         required: true
         content:
@@ -43,6 +50,8 @@ paths:
     get:
       summary: Obtener los datos del cliente
       operationId: getClientById
+      tags:
+        - Consultar cliente
       parameters:
         - name: id
           in: path
