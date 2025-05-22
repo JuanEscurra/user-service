@@ -1,8 +1,12 @@
-server:
-  port: 8081
 spring:
   application:
-    name: user-service
+    name: client-service
   data:
     mongodb:
-      uri: mongodb://admin:123456789@localhost:27017/bd_users?authSource=admin
+      uri: mongodb://admin:123456789@localhost:27017/bd_clients?authSource=admin
+
+server:
+  port: 0
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}
