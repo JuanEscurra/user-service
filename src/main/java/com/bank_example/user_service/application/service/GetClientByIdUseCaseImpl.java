@@ -28,6 +28,7 @@ public class GetClientByIdUseCaseImpl implements GetClientByIdUseCase {
     }
 
     private void printClientNotFoundLog(Throwable e, String id) {
-        log.error("Client Not found by id {}: {}", id,e.getMessage());
+        e.printStackTrace();
+        log.error("Client Not found by id {}: {}", id, e.getMessage());
     }
 }

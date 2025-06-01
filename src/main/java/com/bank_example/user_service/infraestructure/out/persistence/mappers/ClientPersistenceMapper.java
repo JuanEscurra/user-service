@@ -20,10 +20,12 @@ public class ClientPersistenceMapper {
         companyDoc.setPhone(company.getPhone());
         companyDoc.setFiscalAddress(company.getFiscalAddress());
         companyDoc.setCommercialName(company.getCommercialName());
+        companyDoc.setCategory(company.getCategory());
         return companyDoc;
     }
 
     public PersonDoc toPersonDoc(Person person) {
+
         PersonDoc personDoc = new PersonDoc();
         personDoc.setId(person.getId());
         personDoc.setName(person.getName());
@@ -31,6 +33,7 @@ public class ClientPersistenceMapper {
         personDoc.setIdentifier(person.getIdentifier());
         personDoc.setEmail(person.getEmail());
         personDoc.setPhone(person.getPhone());
+        personDoc.setCategory(person.getCategory());
 
         if(person.getIdentifierType() != null) {
             personDoc.setIdentifierType(person.getIdentifierType());
@@ -40,24 +43,20 @@ public class ClientPersistenceMapper {
     }
 
     public Client toClient(ClientDoc clientDoc) {
+        if (clientDoc == null) return null;
+
         Client client = new Client();
         client.setId(clientDoc.getId());
         client.setClientType(clientDoc.getClientType());
-        client.setClientCategory(clientDoc.getClientCategory());
         client.setActive(clientDoc.getActive());
         client.setCreatedAt(clientDoc.getCreatedAt());
-
-        if (clientDoc.getPerson() != null) {
-            client.setPerson(this.toPerson(clientDoc.getPerson()));
-        }
-        if (clientDoc.getCompany() != null) {
-            client.setCompany(this.toCompany(clientDoc.getCompany()));
-        }
 
         return client;
     }
 
     public Person toPerson(PersonDoc personDoc) {
+        if (personDoc == null) return null;
+
         Person person = new Person();
         person.setId(personDoc.getId());
         person.setName(personDoc.getName());
@@ -72,6 +71,8 @@ public class ClientPersistenceMapper {
     }
 
     public Company toCompany(CompanyDoc companyDoc) {
+        if (companyDoc == null) return null;
+
         Company company = new Company();
         company.setId(companyDoc.getId());
         company.setName(companyDoc.getName());

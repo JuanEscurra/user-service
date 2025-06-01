@@ -120,6 +120,13 @@ components:
             - fiscalAddress
             - representatives
           properties:
+            category:
+              type: string
+              description: Categorías de cliente empresas
+              default: STANDARD
+              enum:
+                - STANDARD
+                - PYME
             name:
                 type: string
                 example: "Tech Solutions S.A.C."
@@ -143,6 +150,13 @@ components:
             - lastname
             - identifierType
           properties:
+            category:
+              type: string
+              description: Categorías del cliente individual
+              default: STANDARD
+              enum:
+                - STANDARD
+                - VIP
             lastname:
               type: string
               example: "Escurra"
@@ -162,8 +176,6 @@ components:
               example: "123456"
             clientType:
               $ref: '#/components/schemas/ClientType'
-            clientCategory:
-              $ref: '#/components/schemas/ClientCategory'
             active:
               type: boolean
               example: true
@@ -187,6 +199,13 @@ components:
         - type: object
           description: Empresa registrada
           properties:
+            category:
+              type: string
+              description: Categorías de cliente empresas
+              default: STANDARD
+              enum:
+                - STANDARD
+                - PYME
             id:
               type: string
             name:

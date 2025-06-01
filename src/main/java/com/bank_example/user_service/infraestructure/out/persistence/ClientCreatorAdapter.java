@@ -5,7 +5,6 @@ import com.bank_example.user_service.domain.models.Client;
 import com.bank_example.user_service.domain.models.entities.Company;
 import com.bank_example.user_service.domain.models.entities.Person;
 import com.bank_example.user_service.domain.models.entities.Representative;
-import com.bank_example.user_service.domain.models.value_objects.ClientCategory;
 import com.bank_example.user_service.domain.models.value_objects.ClientType;
 import com.bank_example.user_service.infraestructure.out.persistence.mappers.ClientPersistenceMapper;
 import com.bank_example.user_service.infraestructure.out.persistence.models.ClientDoc;
@@ -17,6 +16,7 @@ import com.bank_example.user_service.infraestructure.out.persistence.repository.
 import com.bank_example.user_service.infraestructure.out.persistence.repository.PersonRepository;
 import com.bank_example.user_service.infraestructure.out.persistence.repository.RepresentativeRepository;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -50,7 +50,7 @@ public class ClientCreatorAdapter implements ClientCreatorPort {
             List<PersonDoc> personDocs = tuple.getT2();
 
             ClientDoc clientDoc = this.createClientWithDefaults(ClientType.COMPANY);
-            clientDoc.setCompany(newCompanyDoc);
+            clientDoc.setCompanyId(new ObjectId(newCompanyDoc.getId()));
 
             List<RepresentativeDoc> reps = personDocs.stream().map(personDoc -> {
                 RepresentativeDoc rep = new RepresentativeDoc();
@@ -73,9 +73,9 @@ public class ClientCreatorAdapter implements ClientCreatorPort {
         personDoc.setCreatedAt(Instant.now());
 
         return this.personRepository.save(personDoc)
-                .map(newCompanyDoc -> {
+                .map(newPersonDoc -> {
                     ClientDoc clientDoc = this.createClientWithDefaults(ClientType.PERSONAL);
-                    clientDoc.setPerson(newCompanyDoc);
+                    clientDoc.setPersonId(new ObjectId(newPersonDoc.getId()));
                     return clientDoc;
                 })
                 .flatMap(this.clientRepository::save)
@@ -85,7 +85,6 @@ public class ClientCreatorAdapter implements ClientCreatorPort {
     private ClientDoc createClientWithDefaults(ClientType clientType) {
         ClientDoc clientDoc = new ClientDoc();
         clientDoc.setClientType(clientType);
-        clientDoc.setClientCategory(ClientCategory.REGULAR);
         clientDoc.setActive(true);
         clientDoc.setCreatedAt(Instant.now());
 

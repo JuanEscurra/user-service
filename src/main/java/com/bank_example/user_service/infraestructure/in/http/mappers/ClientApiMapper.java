@@ -4,7 +4,9 @@ import com.bank_example.user_service.domain.models.Client;
 import com.bank_example.user_service.domain.models.entities.Company;
 import com.bank_example.user_service.domain.models.entities.Representative;
 import com.bank_example.user_service.domain.models.entities.Person;
+import com.bank_example.user_service.domain.models.value_objects.CompanyCategory;
 import com.bank_example.user_service.domain.models.value_objects.IdentifierType;
+import com.bank_example.user_service.domain.models.value_objects.PersonCategory;
 import com.bank_example.user_service.infraestructure.in.http.model.*;
 import com.bank_example.user_service.shared.masker.DataMasker;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +32,6 @@ public class ClientApiMapper {
             clientResponse.setClientType( ClientType.valueOf(client.getClientType().name()) );
         }
 
-        if (client.getClientCategory() != null) {
-            clientResponse.setClientCategory( ClientCategory.valueOf(client.getClientCategory().name()) );
-        }
-
         if (client.getPerson() != null) {
             clientResponse.setPerson( this.toPersonResponse(client.getPerson(), zoneId) );
         }
@@ -56,6 +54,10 @@ public class ClientApiMapper {
             createPerson.setIdentifierType( IdentifierType.valueOf(request.getIdentifierType().name()) );
         }
 
+        if (request.getCategory() != null) {
+            createPerson.setCategory( PersonCategory.valueOf(request.getCategory().name()) );
+        }
+
         return createPerson;
     }
 
@@ -67,6 +69,10 @@ public class ClientApiMapper {
         company.setIdentifier(request.getIdentifier());
         company.setFiscalAddress(request.getFiscalAddress());
         company.setCommercialName(request.getCommercialName());
+
+        if (request.getCategory() != null) {
+            company.setCategory( CompanyCategory.valueOf(request.getCategory().name()) );
+        }
 
         List<Representative> representatives = request.getRepresentatives().stream()
                 .map(representative -> {
@@ -93,6 +99,10 @@ public class ClientApiMapper {
             );
         }
 
+        if (person.getCategory() != null) {
+            personResponse.setCategory( PersonResponse.CategoryEnum.valueOf(person.getCategory().name()) );
+        }
+
         if (person.getCreatedAt() != null) {
             personResponse.setCreatedAt(person.getCreatedAt().atZone(zoneId).toOffsetDateTime());
         }
@@ -111,6 +121,10 @@ public class ClientApiMapper {
         companyResponse.setFiscalAddress(company.getFiscalAddress());
 
         companyResponse.setCreatedAt(company.getCreatedAt().atZone(zoneId).toOffsetDateTime());
+
+        if ( company.getCategory() != null) {
+            companyResponse.setCategory( CompanyResponse.CategoryEnum.valueOf(company.getCategory().name()) );
+        }
 
         return companyResponse;
     }

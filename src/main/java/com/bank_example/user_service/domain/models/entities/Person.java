@@ -2,6 +2,7 @@ package com.bank_example.user_service.domain.models.entities;
 
 
 import com.bank_example.user_service.domain.models.value_objects.IdentifierType;
+import com.bank_example.user_service.domain.models.value_objects.PersonCategory;
 import com.bank_example.user_service.shared.models.BasicInformation;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,5 +14,5 @@ public class Person extends BasicInformation {
 
     private String lastname;
     private IdentifierType identifierType;
-
+    private PersonCategory category;
 }

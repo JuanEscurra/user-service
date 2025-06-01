@@ -2,7 +2,6 @@ package com.bank_example.user_service.domain.models;
 
 import com.bank_example.user_service.domain.models.entities.Company;
 import com.bank_example.user_service.domain.models.entities.Person;
-import com.bank_example.user_service.domain.models.value_objects.ClientCategory;
 import com.bank_example.user_service.domain.models.value_objects.ClientType;
 import com.bank_example.user_service.shared.models.AuditTrail;
 import lombok.Data;
@@ -17,7 +16,6 @@ public class Client extends AuditTrail {
     private Person person;
     private Company company;
     private ClientType clientType;
-    private ClientCategory clientCategory;
     private Boolean active;
 
 
