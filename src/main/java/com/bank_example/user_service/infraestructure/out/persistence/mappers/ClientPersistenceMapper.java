@@ -67,6 +67,7 @@ public class ClientPersistenceMapper {
         person.setActive(personDoc.getActive());
         person.setIdentifierType(personDoc.getIdentifierType());
         person.setCreatedAt(personDoc.getCreatedAt());
+        person.setCategory(personDoc.getCategory());
         return person;
     }
 
@@ -82,6 +83,7 @@ public class ClientPersistenceMapper {
         company.setFiscalAddress(companyDoc.getFiscalAddress());
         company.setCommercialName(companyDoc.getCommercialName());
         company.setCreatedAt(companyDoc.getCreatedAt());
+        company.setCategory(companyDoc.getCategory());
         return company;
     }
 }

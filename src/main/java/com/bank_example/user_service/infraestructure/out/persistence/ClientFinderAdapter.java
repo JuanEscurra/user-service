@@ -3,11 +3,10 @@ package com.bank_example.user_service.infraestructure.out.persistence;
 import com.bank_example.user_service.application.ports.out.persistence.ClientFinderPort;
 import com.bank_example.user_service.domain.models.Client;
 import com.bank_example.user_service.infraestructure.out.persistence.mappers.ClientPersistenceMapper;
-import com.bank_example.user_service.infraestructure.out.persistence.models.CompanyDoc;
-import com.bank_example.user_service.infraestructure.out.persistence.models.PersonDoc;
 import com.bank_example.user_service.infraestructure.out.persistence.repository.ClientRepository;
 import com.bank_example.user_service.infraestructure.out.persistence.repository.CompanyRepository;
 import com.bank_example.user_service.infraestructure.out.persistence.repository.PersonRepository;
+import com.bank_example.user_service.shared.exceptions.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -24,6 +23,7 @@ public class ClientFinderAdapter implements ClientFinderPort {
     @Override
     public Mono<Client> findById(String id) {
         return this.clientRepository.findById(id)
+                .switchIfEmpty(Mono.error(new DataNotFoundException("Client not found with id: " + id)))
                 .flatMap(clientDoc -> {
 
                     if ( clientDoc.getPersonId() != null) {
